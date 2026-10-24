@@ -457,30 +457,3 @@ export function cellLabels(d: CellDesign, parts: CellParts, cut: CutParts | null
   add("lumen", LABELS.lumen);
   return out;
 }
-
-const TISSUE_LABELS: Record<string, string> = {
-  wall: LABELS.wall,
-  vacuole: LABELS.vacuole,
-  nucleus: LABELS.nucleus,
-  lumen: LABELS.lumen,
-  space: "ช่องว่างระหว่างเซลล์ · Intercellular space",
-};
-
-/** Labels for the tissue block, pinned to anchors chosen when the block was built. */
-export function tissueLabels(d: CellDesign, anchors: Record<string, THREE.Vector3>): CellLabel[] {
-  const out: CellLabel[] = [];
-  for (const key of ["wall", "vacuole", "nucleus", "plastid", "lumen", "space"]) {
-    const pos = anchors[key];
-    if (!pos) continue;
-    const text =
-      key === "plastid"
-        ? d.plastids === "none"
-          ? null
-          : LABELS[d.plastids]
-        : key === "wall" && d.lignified && hasSecondaryWall(d)
-          ? LABELS.swLignin
-          : TISSUE_LABELS[key];
-    if (text) out.push({ key, text, pos });
-  }
-  return out;
-}

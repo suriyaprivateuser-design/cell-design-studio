@@ -78,7 +78,7 @@ function clipHalfPlane(poly: Pt[], n: Pt, c: number): Pt[] {
   return out;
 }
 
-function area(poly: Pt[]) {
+export function area(poly: Pt[]) {
   let s = 0;
   for (let i = 0; i < poly.length; i++) {
     const a = poly[i];
@@ -88,7 +88,7 @@ function area(poly: Pt[]) {
   return s / 2;
 }
 
-function centroid(poly: Pt[]): Pt {
+export function centroid(poly: Pt[]): Pt {
   let x = 0,
     y = 0;
   for (const p of poly) {
@@ -144,7 +144,7 @@ function clean(poly: Pt[]): Pt[] {
   return out;
 }
 
-function roundedInset(poly: Pt[], d: number, r: number): Pt[] {
+export function roundedInset(poly: Pt[], d: number, r: number): Pt[] {
   let q = clean(inset(poly, d + r));
   let rr = r;
   if (q.length < 3 || Math.abs(area(q)) < 1e-3) {
@@ -177,7 +177,7 @@ function roundedInset(poly: Pt[], d: number, r: number): Pt[] {
   return out;
 }
 
-function inradius(poly: Pt[], c: Pt) {
+export function inradius(poly: Pt[], c: Pt) {
   let m = Infinity;
   for (let i = 0; i < poly.length; i++) {
     const a = poly[i];
@@ -195,7 +195,7 @@ function circle(c: Pt, r: number, n = 28): Pt[] {
   });
 }
 
-function perimeter(poly: Pt[]) {
+export function perimeter(poly: Pt[]) {
   let s = 0;
   for (let i = 0; i < poly.length; i++) {
     const a = poly[i];
@@ -206,7 +206,7 @@ function perimeter(poly: Pt[]) {
 }
 
 /** Point at arc length t along a closed outline, with the outline's direction there. */
-function pointAlong(poly: Pt[], t: number): [Pt, number] {
+export function pointAlong(poly: Pt[], t: number): [Pt, number] {
   for (let i = 0; i < poly.length; i++) {
     const a = poly[i];
     const b = poly[(i + 1) % poly.length];
@@ -302,10 +302,14 @@ export interface SectionOptions {
   plastidsPerCell?: number;
   /** Irregularity of the cell lattice, 0–0.5 */
   jitter?: number;
+  /** Multiplies wall thickness (e.g. fibres, whose walls nearly fill the cell) */
+  wallScale?: number;
+  /** Multiplies the corner thickening (collenchyma) */
+  cornerScale?: number;
 }
 
 export function buildSection(d: CellDesign, view: SectionView, width = 320, height = 220, seed = 11, opts: SectionOptions = {}): Section {
-  const { targetCells = 80, clipToField = false, plastidsPerCell = 8, jitter: jitterOpt } = opts;
+  const { targetCells = 80, clipToField = false, plastidsPerCell = 8, jitter: jitterOpt, wallScale = 1, cornerScale = 1 } = opts;
   const dims = cellDims(d);
   // Cell diameter in view units. A hexagonal cell covers ~0.87·D², so the smallest
   // cells give a field of about targetCells: enough to read the tissue, cheap to redraw while sliding.
@@ -335,14 +339,14 @@ export function buildSection(d: CellDesign, view: SectionView, width = 320, heig
 
   const minD = Math.min(dx, dy);
   // Convert 3D model thickness (relative to cell radius) to section units.
-  const unit = (t: number) => (t / (2 * dims.scale)) * minD * 1.15;
+  const unit = (t: number) => (t / (2 * dims.scale)) * minD * 1.15 * wallScale;
   const space = effectiveSpace(d);
   const gap = space * 0.2 * minD;
   const roundR = d.shape === "rounded" ? 0.5 * minD : 0.04 * minD + space * 0.32 * minD;
   const ml = unit(dims.middleLamella) * 0.5;
   const pw = unit(dims.primary);
   const sw = unit(dims.secondary);
-  const cornerR = roundR + d.cornerThickening * 0.3 * minD;
+  const cornerR = roundR + d.cornerThickening * 0.3 * minD * cornerScale;
 
   const cells: SectionCell[] = [];
   sites.forEach((s, idx) => {

@@ -38,7 +38,7 @@ async function TissueDetail({ params }: { params: PageProps<"/library/[id]">["pa
           {tissue.nameTh} <span className="text-xl font-normal text-muted">· {tissue.nameEn}</span>
         </h1>
       </div>
-      {tissue.detail === "full" && tissue.knowledge && tissue.reference ? (
+      {tissue.knowledge ? (
         <TissueKnowledge tissueId={tissue.id} />
       ) : (
         <div className="grid gap-5 md:grid-cols-2">

@@ -10,6 +10,7 @@
  * until their mission is built.
  */
 import { DEFAULT_DESIGN, effectiveSpace, hasSecondaryWall, type CellDesign } from "@/simulation/design";
+import { KNOWLEDGE } from "./knowledge";
 
 export type TissueGroup = "meristem" | "ground" | "dermal" | "vascular";
 
@@ -85,9 +86,10 @@ export const PARENCHYMA_REFERENCE: CellDesign = {
  */
 export const CHLORENCHYMA_REFERENCE: CellDesign = {
   ...PARENCHYMA_REFERENCE,
-  size: 0.45,
-  vacuole: 0.72,
-  intercellularSpace: 0.5,
+  size: 0.85,
+  primaryWall: 0.4,
+  vacuole: 0.62,
+  intercellularSpace: 0.55,
   plastids: "chloroplast",
 };
 
@@ -169,7 +171,8 @@ export const TISSUES: Tissue[] = [
     group: "ground",
     missionId: "2",
     summary: "เซลล์มีชีวิต ผนังปฐมภูมิหนาไม่สม่ำเสมอ (มักหนาที่มุม) ค้ำจุนอวัยวะที่ยังเจริญเติบโต",
-    detail: "summary",
+    detail: "full",
+    knowledge: KNOWLEDGE["collenchyma"],
   },
   {
     id: "sclerenchyma",
@@ -178,7 +181,8 @@ export const TISSUES: Tissue[] = [
     group: "ground",
     missionId: "3",
     summary: "ผนังทุติยภูมิหนา มีลิกนิน เซลล์มักตายเมื่อเจริญเต็มที่ แบ่งเป็นไฟเบอร์ (fiber) และสเกลอรีด (sclereid)",
-    detail: "summary",
+    detail: "full",
+    knowledge: KNOWLEDGE["sclerenchyma"],
   },
   {
     id: "meristem",
@@ -187,7 +191,8 @@ export const TISSUES: Tissue[] = [
     group: "meristem",
     missionId: "4",
     summary: "เซลล์เล็ก ผนังบาง นิวเคลียสใหญ่ ไซโทพลาซึมหนาแน่น แวคิวโอลเล็ก แบ่งเซลล์ได้ตลอด",
-    detail: "summary",
+    detail: "full",
+    knowledge: KNOWLEDGE["meristem"],
   },
   {
     id: "epidermis",
@@ -196,7 +201,8 @@ export const TISSUES: Tissue[] = [
     group: "dermal",
     missionId: "5",
     summary: "เซลล์ชั้นนอกสุดเรียงต่อเนื่อง ส่วนที่อยู่เหนือดินมีคิวทินเคลือบ มีเซลล์คุม ขน และขนราก",
-    detail: "summary",
+    detail: "full",
+    knowledge: KNOWLEDGE["epidermis"],
   },
   {
     id: "guard-cell",
@@ -205,7 +211,8 @@ export const TISSUES: Tissue[] = [
     group: "dermal",
     missionId: "6",
     summary: "เซลล์เอพิเดอร์มิสที่เปลี่ยนแปลงไป อยู่เป็นคู่รอบปากใบ ผนังหนาไม่เท่ากัน ควบคุมการเปิดปิดปากใบ",
-    detail: "summary",
+    detail: "full",
+    knowledge: KNOWLEDGE["guard-cell"],
   },
   {
     id: "xylem",
@@ -214,7 +221,8 @@ export const TISSUES: Tissue[] = [
     group: "vascular",
     missionId: "7",
     summary: "ลำเลียงน้ำและแร่ธาตุ ประกอบด้วยเทรคีด เวสเซลเมมเบอร์ ไซเล็มพาเรงคิมา และไซเล็มไฟเบอร์",
-    detail: "summary",
+    detail: "full",
+    knowledge: KNOWLEDGE["xylem"],
   },
   {
     id: "phloem",
@@ -223,7 +231,8 @@ export const TISSUES: Tissue[] = [
     group: "vascular",
     missionId: "8",
     summary: "ลำเลียงอาหาร ประกอบด้วยซีฟทิวบ์เมมเบอร์ เซลล์คอมพาเนียน โฟลเอ็มพาเรงคิมา และโฟลเอ็มไฟเบอร์",
-    detail: "summary",
+    detail: "full",
+    knowledge: KNOWLEDGE["phloem"],
   },
   {
     id: "periderm",
@@ -232,7 +241,8 @@ export const TISSUES: Tissue[] = [
     group: "dermal",
     missionId: "9",
     summary: "เนื้อเยื่อผิวที่เกิดแทนเอพิเดอร์มิสเมื่อมีการเจริญทุติยภูมิ ประกอบด้วยเฟลเลม (คอร์ก) เฟลโลเจน และเฟลโลเดิร์ม",
-    detail: "summary",
+    detail: "full",
+    knowledge: KNOWLEDGE["periderm"],
   },
 ];
 

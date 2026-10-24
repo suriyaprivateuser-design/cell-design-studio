@@ -1,21 +1,21 @@
 /** Colours shared by the 3D model, the tissue section and the legend. */
 export const CELL_COLORS = {
-  middleLamella: "#b8c46a",
-  primaryWall: "#dfe995",
-  wallPlain: "#dfe995",
-  secondaryWall: "#e9dca6",
-  lignin: "#d1765a",
-  membrane: "#9cc46e",
-  cytoplasm: "#e4f0bd",
-  vacuole: "#cdeec6",
-  tonoplast: "#9fd08f",
-  nucleus: "#a88bd8",
-  nucleolus: "#6e4fb3",
-  amyloplast: "#fffbec",
-  amyloplastEdge: "#d6c891",
-  chloroplast: "#5aa437",
-  lumen: "#f2efdf",
-  space: "#a9a693",
+  middleLamella: "#b3c057",
+  primaryWall: "#dbe686",
+  wallPlain: "#dbe686",
+  secondaryWall: "#ead9a0",
+  lignin: "#d27a54",
+  membrane: "#8cbf5e",
+  cytoplasm: "#a9da7c",
+  vacuole: "#d6f6cc",
+  tonoplast: "#8fcf86",
+  nucleus: "#b49ce6",
+  nucleolus: "#6a4bb3",
+  amyloplast: "#fffaf0",
+  amyloplastEdge: "#d4c38c",
+  chloroplast: "#4f9e33",
+  lumen: "#f3efde",
+  space: "#8e8b78",
 } as const;
 
 export const LEGEND: { key: keyof typeof CELL_COLORS; th: string; en: string }[] = [
@@ -29,3 +29,21 @@ export const LEGEND: { key: keyof typeof CELL_COLORS; th: string; en: string }[]
   { key: "amyloplast", th: "อะไมโลพลาสต์", en: "Amyloplast" },
   { key: "lumen", th: "ลูเมน (ไม่มีโพรโทพลาสต์)", en: "Lumen" },
 ];
+
+/** Extra colours for the tissue models beyond the designable cell. */
+export const MODEL_COLORS = {
+  denseCytoplasm: "#93cf68",
+  companionCytoplasm: "#7cc457",
+  sieveCytoplasm: "#d3ecb4",
+  thinWall: "#e6edb4",
+  cuticle: "#f4e48a",
+  guardCell: "#b2df84",
+  pavementCell: "#eef6d6",
+  pore: "#46523a",
+  suberin: "#a06b43",
+  corkLumen: "#ead3ad",
+  pitBorder: "#f3cfa8",
+  pitHole: "#5b3524",
+  plasmodesma: "#5f7d3a",
+  chromosome: "#6a4bb3",
+} as const;

@@ -27,7 +27,9 @@ Stack: Next.js 16 (App Router), TypeScript, Tailwind CSS 4, React Three Fiber an
 | 2 · Functional Studio | Mission 01 (Parenchyma) end to end: Studio → Test → Results → Discovery → Compare → Knowledge → Mini Quiz | Done |
 | 3 · Basic Ground Tissue | Collenchyma, Sclerenchyma studios | Planned. The 3D engine already supports corner (angular) thickening, secondary walls and lignin. |
 | 4 · Other Plant Tissues | Meristem, epidermis, guard cells, xylem, phloem, periderm | Planned |
-| 5 · Knowledge & Assessment | Compare, Knowledge, Quiz, Classification, Library | Built for parenchyma, with the classification chart complete. Other tissues show a summary card until their mission exists. |
+| 5 · Knowledge & Assessment | Compare, Knowledge, Quiz, Classification, Library | Library: a cel-shaded 3D model and four knowledge tabs for all nine tissues. Compare and quiz exist for Mission 01 only. |
+
+Every tissue has a 3D model in the library: parenchyma (storage / chlorenchyma), collenchyma, sclerenchyma (fibre / sclereid), apical meristem, epidermis (leaf with stomata and cuticle / root with root hair), guard cells (open / closed), xylem (tracheid, vessel elements with perforation plates, helical thickening, parenchyma, fibre), phloem (sieve-tube elements with sieve plates, companion cells with plasmodesmata, parenchyma, fibre) and periderm (phellem, phellogen, phelloderm in radial files). All models use a cel-shaded anime style: three hard light bands, ink outlines and white gloss marks.
 
 Missions 02–09 already have their problem screens. Their "เริ่มออกแบบเซลล์" button is replaced by a note giving the phase in which that studio arrives, so there are no dead buttons.
 
@@ -65,6 +67,9 @@ src/three/        3D MODEL (React Three Fiber)
   shape.ts          cell surface (truncated octahedron / sphere / hexagonal prism)
   cellGeometry.ts   wall layers, protoplast, cut faces, labels
   tissueBlock.ts    "เนื้อเยื่อ 3D" view: a block of many cells extruded from the tissue section
+  models/           3D models of every tissue (registry in models/index.ts)
+  toon/             cel-shaded (anime) rendering: toon materials, ink outlines, model builder
+  Stage.tsx         shared canvas: lights, camera glide, orbit controls, label overlay
 src/tissue/       2D tissue section (SVG, light-microscope style)
 src/components/   UI
 src/app/          routes

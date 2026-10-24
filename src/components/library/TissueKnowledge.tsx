@@ -4,6 +4,7 @@ import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { getTissue } from "@/content/tissues";
 import { CellViewer, type ViewerOptions } from "../CellViewer";
+import { ModelViewer } from "../ModelViewer";
 import { TissuePreview } from "../studio/TissuePreview";
 import { Card, cx } from "../ui";
 
@@ -23,10 +24,20 @@ export function TissueKnowledge({ tissueId }: { tissueId: string }) {
   const [tab, setTab] = useState<TabId>("overview");
   const [viewer, setViewer] = useState<ViewerOptions>({ view: "tissue", showLabels: true, showLayers: true });
   const [variantId, setVariantId] = useState(tissue.variants?.[0]?.id);
-  const design = tissue.variants?.find((v) => v.id === variantId)?.design ?? tissue.reference!;
+  const design = tissue.variants?.find((v) => v.id === variantId)?.design ?? tissue.reference;
 
   return (
     <div className="grid gap-5 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)]">
+      {!design ? (
+        <div className="space-y-4">
+          <Card className="overflow-hidden p-0">
+            <ModelViewer tissueId={tissue.id} className="h-[56vh] min-h-[380px]" />
+          </Card>
+          <p className="px-1 text-[11px] leading-snug text-faint">
+            แบบจำลองสร้างจากลักษณะทางกายวิภาค ไม่ใช่ภาพถ่ายจากกล้องจุลทรรศน์ สัดส่วนบางส่วน เช่น ความหนาผนัง ขยายให้เห็นชัด ลากเพื่อหมุนและซูมได้
+          </p>
+        </div>
+      ) : (
       <div className="space-y-4">
         <Card className="overflow-hidden p-0">
           {tissue.variants && (
@@ -57,6 +68,7 @@ export function TissueKnowledge({ tissueId }: { tissueId: string }) {
           <p className="mt-3 text-[11px] text-faint">ภาพจำลองจากแบบจำลอง ไม่ใช่ภาพถ่ายจากกล้องจุลทรรศน์ ความหนาผนังเซลล์ขยายให้เห็นชัดกว่าสัดส่วนจริง</p>
         </Card>
       </div>
+      )}
 
       <Card className="p-5">
         <div role="tablist" aria-label="หัวข้อความรู้" className="mb-4 grid grid-cols-4 gap-1 rounded-full bg-sage-50 p-1">
