@@ -21,18 +21,38 @@ export function TissueKnowledge({ tissueId }: { tissueId: string }) {
   const tissue = getTissue(tissueId)!;
   const k = tissue.knowledge!;
   const [tab, setTab] = useState<TabId>("overview");
-  const [viewer, setViewer] = useState<ViewerOptions>({ view: "cross", showLabels: true, showLayers: true });
+  const [viewer, setViewer] = useState<ViewerOptions>({ view: "tissue", showLabels: true, showLayers: true });
+  const [variantId, setVariantId] = useState(tissue.variants?.[0]?.id);
+  const design = tissue.variants?.find((v) => v.id === variantId)?.design ?? tissue.reference!;
 
   return (
     <div className="grid gap-5 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)]">
       <div className="space-y-4">
         <Card className="overflow-hidden p-0">
-          <CellViewer design={tissue.reference!} {...viewer} onChange={(p) => setViewer((v) => ({ ...v, ...p }))} className="h-[46vh] min-h-[320px]" caption="แบบจำลองเซลล์" />
+          {tissue.variants && (
+            <div className="flex flex-wrap items-center gap-2 border-b border-line/70 px-3 py-2" role="radiogroup" aria-label="ชนิด">
+              {tissue.variants.map((v) => (
+                <button
+                  key={v.id}
+                  role="radio"
+                  aria-checked={variantId === v.id}
+                  onClick={() => setVariantId(v.id)}
+                  className={cx(
+                    "rounded-full px-3 py-1.5 text-xs font-medium transition-colors",
+                    variantId === v.id ? "bg-sage-700 text-white" : "text-muted hover:bg-sage-50 hover:text-ink",
+                  )}
+                >
+                  {v.label}
+                </button>
+              ))}
+            </div>
+          )}
+          <CellViewer design={design} {...viewer} onChange={(p) => setViewer((v) => ({ ...v, ...p }))} className="h-[46vh] min-h-[320px]" caption="แบบจำลอง" />
         </Card>
         <Card className="p-4">
           <div className="grid gap-4 sm:grid-cols-2">
-            <TissuePreview design={tissue.reference!} view="cross" title="ภาพตัดขวาง" compact />
-            <TissuePreview design={tissue.reference!} view="long" title="ภาพตัดตามยาว" compact />
+            <TissuePreview design={design} view="cross" title="ภาพตัดขวาง" compact />
+            <TissuePreview design={design} view="long" title="ภาพตัดตามยาว" compact />
           </div>
           <p className="mt-3 text-[11px] text-faint">ภาพจำลองจากแบบจำลอง ไม่ใช่ภาพถ่ายจากกล้องจุลทรรศน์ ความหนาผนังเซลล์ขยายให้เห็นชัดกว่าสัดส่วนจริง</p>
         </Card>

@@ -31,7 +31,7 @@ export function StudioScreen({ missionId }: { missionId: string }) {
   const recordAttempt = useStudio((s) => s.recordAttempt);
   const nameVisible = useStudio((s) => isNameVisible(s, missionId));
 
-  const [viewer, setViewer] = useState<ViewerOptions>({ view: "cross", showLabels: true, showLayers: true });
+  const [viewer, setViewer] = useState<ViewerOptions>({ view: "tissue", showLabels: true, showLayers: true });
   const [compare, setCompare] = useState(false);
 
   useEffect(() => {

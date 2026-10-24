@@ -64,6 +64,7 @@ src/simulation/   SIMULATION RULES
 src/three/        3D MODEL (React Three Fiber)
   shape.ts          cell surface (truncated octahedron / sphere / hexagonal prism)
   cellGeometry.ts   wall layers, protoplast, cut faces, labels
+  tissueBlock.ts    "เนื้อเยื่อ 3D" view: a block of many cells extruded from the tissue section
 src/tissue/       2D tissue section (SVG, light-microscope style)
 src/components/   UI
 src/app/          routes

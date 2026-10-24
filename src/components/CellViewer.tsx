@@ -37,7 +37,7 @@ interface Props extends ViewerOptions {
   distanceScale?: number;
 }
 
-const VIEWS: View[] = ["whole", "cross", "long"];
+const VIEWS: View[] = ["tissue", "whole", "cross", "long"];
 
 export function CellViewer({ design, view, showLabels, showLayers, onChange, className, bare, sway, interactive = true, caption, distanceScale }: Props) {
   const toolbar = !bare && onChange;

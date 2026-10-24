@@ -51,6 +51,8 @@ export interface Tissue {
   summary: string;
   detail: "full" | "summary";
   reference?: CellDesign;
+  /** Other forms of the same tissue the library can switch between (e.g. storage vs chlorenchyma) */
+  variants?: { id: string; label: string; design: CellDesign }[];
   traits?: Trait[];
   micrographs?: Micrograph[];
   knowledge?: {
@@ -77,6 +79,18 @@ export const PARENCHYMA_REFERENCE: CellDesign = {
   plastids: "amyloplast",
 };
 
+/**
+ * Chlorenchyma: parenchyma with chloroplasts (leaf mesophyll). Same cell type,
+ * different plastids. Shown on the home page and as a variant in the library.
+ */
+export const CHLORENCHYMA_REFERENCE: CellDesign = {
+  ...PARENCHYMA_REFERENCE,
+  size: 0.45,
+  vacuole: 0.72,
+  intercellularSpace: 0.5,
+  plastids: "chloroplast",
+};
+
 /** Used only as a contrasting picture in quiz questions (full model arrives with Mission 03). */
 export const SCLERENCHYMA_FIBER_PICTURE: CellDesign = {
   ...DEFAULT_DESIGN,
@@ -101,6 +115,10 @@ export const TISSUES: Tissue[] = [
     summary: "เซลล์มีชีวิต ผนังปฐมภูมิบาง แวคิวโอลใหญ่ ทำหน้าที่สะสมสาร สังเคราะห์ด้วยแสง และซ่อมแซมบาดแผล",
     detail: "full",
     reference: PARENCHYMA_REFERENCE,
+    variants: [
+      { id: "storage", label: "สะสมแป้ง (หัวมันฝรั่ง)", design: PARENCHYMA_REFERENCE },
+      { id: "chlorenchyma", label: "คลอเรงคิมา (ใบ)", design: CHLORENCHYMA_REFERENCE },
+    ],
     traits: [
       { text: "เซลล์มีชีวิต", matches: (d) => d.living, differs: "แบบของนักเรียนเป็นเซลล์ที่ตาย ส่วนพาเรงคิมาจริงยังมีชีวิต" },
       { text: "ผนังปฐมภูมิค่อนข้างบาง", matches: (d) => d.primaryWall <= 0.4, differs: "ผนังปฐมภูมิของแบบนักเรียนหนากว่าพาเรงคิมาทั่วไป" },

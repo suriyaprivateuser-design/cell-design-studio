@@ -3,12 +3,12 @@
 import { useMemo } from "react";
 import * as THREE from "three";
 import { hasSecondaryWall, type CellDesign } from "@/simulation/design";
-import { CUT_NORMAL, type CellParts, type CutParts, type View } from "./cellGeometry";
+import { CUT_NORMAL, type CellParts, type CutParts, type CutView } from "./cellGeometry";
 import { CELL_COLORS as C } from "./palette";
 
 interface Props {
   design: CellDesign;
-  view: View;
+  view: "whole" | CutView;
   parts: CellParts;
   cut: CutParts | null;
   /** Colour each wall layer separately (middle lamella / primary / secondary) */

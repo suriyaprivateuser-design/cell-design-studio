@@ -12,16 +12,19 @@ import { effectiveSpace, hasSecondaryWall, type CellDesign } from "@/simulation/
 import { cellDims, type CellDims } from "@/simulation/dims";
 import { castRay, cornerWeight, makeField, type RaySample } from "./shape";
 
-export type View = "whole" | "cross" | "long";
+export type CutView = "cross" | "long";
+/** Single-cell views, plus "tissue": a 3D block of many cells. */
+export type View = "whole" | CutView | "tissue";
 
 export const VIEW_LABEL: Record<View, { th: string; en: string }> = {
   whole: { th: "ทั้งเซลล์", en: "3D" },
   cross: { th: "ภาคตัดขวาง", en: "Cross-section" },
   long: { th: "ภาคตัดตามยาว", en: "Longitudinal" },
+  tissue: { th: "เนื้อเยื่อ 3D", en: "Tissue block" },
 };
 
 /** Normal of the cut plane for each view; the half on the positive side is removed. */
-export const CUT_NORMAL: Record<Exclude<View, "whole">, THREE.Vector3> = {
+export const CUT_NORMAL: Record<CutView, THREE.Vector3> = {
   cross: new THREE.Vector3(0, 1, 0),
   long: new THREE.Vector3(0, 0, 1),
 };
@@ -90,13 +93,13 @@ const RING = 220;
 const ringCache = new Map<string, { dirs: THREE.Vector3[]; rays: RaySample[] }>();
 
 /** Basis of the cut plane: two in-plane axes. */
-function planeBasis(view: Exclude<View, "whole">): [THREE.Vector3, THREE.Vector3] {
+function planeBasis(view: CutView): [THREE.Vector3, THREE.Vector3] {
   return view === "cross"
     ? [new THREE.Vector3(1, 0, 0), new THREE.Vector3(0, 0, -1)]
     : [new THREE.Vector3(1, 0, 0), new THREE.Vector3(0, 1, 0)];
 }
 
-function ringRays(d: CellDesign, view: Exclude<View, "whole">) {
+function ringRays(d: CellDesign, view: CutView) {
   const key = `${fieldKey(d)}:${view}`;
   const hit = ringCache.get(key);
   if (hit) return hit;
@@ -138,7 +141,7 @@ function surfaceGeometry(d: CellDesign, dims: CellDims, radius: (ray: RaySample)
 /** Flat ring (or disk when inner is null) lying in the cut plane. */
 function capGeometry(
   d: CellDesign,
-  view: Exclude<View, "whole">,
+  view: CutView,
   outer: (ray: RaySample) => number,
   inner: ((ray: RaySample) => number) | null,
   lift: number,
@@ -321,7 +324,7 @@ export interface CutParts {
   anchors: Record<string, THREE.Vector3>;
 }
 
-export function buildCut(d: CellDesign, parts: CellParts, view: Exclude<View, "whole">): CutParts {
+export function buildCut(d: CellDesign, parts: CellParts, view: CutView): CutParts {
   const dims = parts.dims;
   const R = (b: Boundary) => (r: RaySample) => radiusAt(dims, r, b);
   const faces: CutFace[] = [
@@ -384,6 +387,8 @@ export function buildCut(d: CellDesign, parts: CellParts, view: Exclude<View, "w
 }
 
 export function cameraFor(view: View, d: CellDesign, distanceScale = 1): THREE.Vector3 {
+  // The tissue block is a fixed size whatever the cells; view it from above at an angle.
+  if (view === "tissue") return new THREE.Vector3(0.6, 6.2, 4.4).multiplyScalar(distanceScale);
   // Frame for the largest cell of this shape, not the current one, so changing
   // the size slider visibly changes the size of the cell on screen.
   const maxScale = cellDims({ ...d, size: 1 }).scale;
@@ -450,5 +455,32 @@ export function cellLabels(d: CellDesign, parts: CellParts, cut: CutParts | null
   add("nucleus", LABELS.nucleus);
   if (d.plastids !== "none") add("plastid", LABELS[d.plastids]);
   add("lumen", LABELS.lumen);
+  return out;
+}
+
+const TISSUE_LABELS: Record<string, string> = {
+  wall: LABELS.wall,
+  vacuole: LABELS.vacuole,
+  nucleus: LABELS.nucleus,
+  lumen: LABELS.lumen,
+  space: "ช่องว่างระหว่างเซลล์ · Intercellular space",
+};
+
+/** Labels for the tissue block, pinned to anchors chosen when the block was built. */
+export function tissueLabels(d: CellDesign, anchors: Record<string, THREE.Vector3>): CellLabel[] {
+  const out: CellLabel[] = [];
+  for (const key of ["wall", "vacuole", "nucleus", "plastid", "lumen", "space"]) {
+    const pos = anchors[key];
+    if (!pos) continue;
+    const text =
+      key === "plastid"
+        ? d.plastids === "none"
+          ? null
+          : LABELS[d.plastids]
+        : key === "wall" && d.lignified && hasSecondaryWall(d)
+          ? LABELS.swLignin
+          : TISSUE_LABELS[key];
+    if (text) out.push({ key, text, pos });
+  }
   return out;
 }
