@@ -4,12 +4,10 @@
 
 **Problem → Design Cell → Observe Changes → Test → Discover Plant Tissue → Explain**
 
-The app is a standalone Next.js project inside this repository. It does not share code with the SoraLingo Expo app at the repository root.
 
 ## Run it
 
 ```bash
-cd cell-design-studio
 npm install
 npm run dev        # http://localhost:3000
 npm run build      # production build
@@ -17,7 +15,7 @@ npx tsc --noEmit   # typecheck
 npm run lint
 ```
 
-To deploy on Vercel, create a separate Vercel project with **Root Directory = `cell-design-studio`**. The existing Vercel project builds the Expo app at the repository root.
+To deploy on Vercel, import this repository as a new project. The default settings work (framework Next.js, root directory `/`).
 
 Stack: Next.js 16 (App Router), TypeScript, Tailwind CSS 4, React Three Fiber and Three.js, Zustand (progress saved in localStorage), Framer Motion and Lucide React. There is no login and no backend.
 
